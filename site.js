@@ -73,7 +73,33 @@ async function loadFeaturedProducts() {
   grid.innerHTML = products.map(buildProductCard).join('');
 }
 
+async function loadHomeCategories() {
+  const { data: categories, error } = await supabaseClient
+    .from('categories')
+    .select('*')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+
+  const grid = document.getElementById('categoriesGrid');
+
+  if (error || !categories || categories.length === 0) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = categories.map(cat => `
+    <a href="category.html?id=${cat.id}" class="category-card">
+      <div class="category-img" style="background-image:url('${cat.image_url || ''}')"></div>
+      <div class="category-label">
+        <h3>${cat.name}</h3>
+        <span>اكتشف المجموعة ←</span>
+      </div>
+    </a>
+  `).join('');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadBanners();
+  loadHomeCategories();
   loadFeaturedProducts();
 });
