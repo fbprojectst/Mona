@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">الفئة | Mona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><img src="images/logo.jpeg" alt="Mona" class="logo-img"><span>Mona</span></a>
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html">الرئيسية</a>
+      <a href="index.html#contact">mona_tetouan</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="القائمة">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="category-page-header">
+    <h1 id="categoryName">جاري التحميل...</h1>
+    <p id="categoryDesc"></p>
+  </div>
+
+  <section class="featured">
+    <div class="product-grid" id="categoryGrid">
+      <p class="loading-msg">جاري تحميل المنتجات...</p>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>Mona</h3>
+      <p>متجر متخصص في لباس التخرج والجبادور، بخياطة دقيقة وتفصيل حسب الطلب.</p>
+    </div>
+    <div class="footer-links" id="footerCategories">
+      <h4>الفئات</h4>
+    </div>
+    <div class="footer-contact">
+      <h4>تواصل معنا</h4>
+      <div class="social-icons">
+        <a href="https://instagram.com/mona_tetouan" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg>
+          <span>mona_tetouan</span>
+        </a>
+        <a href="https://api.whatsapp.com/send?phone=212600655645&text=مرحباً Mona، أعجبتني منتجاتكم وأود معرفة التفاصيل والأسعار 🌸" target="_blank" rel="noopener" aria-label="WhatsApp" class="social-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.9c0 4.7-3.9 8.6-8.6 8.6-1.5 0-2.9-.4-4.2-1.1L3 20.5l1.1-4.5a8.5 8.5 0 0 1-1.2-4.4c0-4.7 3.9-8.6 8.6-8.6s8.6 3.7 8.6 8.9z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.7 8.4c.2-.5.5-.5.7-.5h.5c.2 0 .4 0 .6.4.2.5.7 1.6.7 1.8.1.1.1.3 0 .4-.1.2-.2.3-.3.4l-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.8 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.1.5.1.6-.1l.7-.8c.2-.3.4-.2.7-.1l1.6.8c.2.1.4.2.4.4.1.2.1 1-.3 1.5-.3.6-1.5 1.1-2 1.1-.6 0-1.1.1-3.7-1-2.9-1.2-4.7-4.2-4.9-4.4-.1-.2-1.1-1.4-1.1-2.7 0-1.3.7-1.9.9-2.1z" fill="currentColor"/></svg>
+          <span>اطلب عبر واتساب</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <p class="footer-copy">© 2026 Mona — جميع الحقوق محفوظة</p>
+</footer>
+
+<script src="supabase-config.js"></script>
+<script src="common.js"></script>
+<script src="category.js"></script>
+</body>
+</html>
