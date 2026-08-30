@@ -18,9 +18,10 @@ async function loadProductPage() {
 
   const { data: product, error } = await supabaseClient
     .from('products')
-    .select('*')
+    .select('*, categories!inner(is_active)')
     .eq('id', productId)
     .eq('is_active', true)
+    .eq('categories.is_active', true)
     .single();
 
   if (error || !product) {

@@ -53,9 +53,10 @@ async function loadBanners() {
 async function loadFeaturedProducts() {
   const { data: products, error } = await supabaseClient
     .from('products')
-    .select('*')
+    .select('*, categories!inner(is_active)')
     .eq('is_active', true)
     .eq('is_featured', true)
+    .eq('categories.is_active', true)
     .order('sort_order', { ascending: true });
 
   const grid = document.getElementById('featuredGrid');
