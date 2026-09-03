@@ -37,13 +37,15 @@ async function loadCategoryPage() {
   descEl.textContent = category.description || '';
   document.getElementById('pageTitle').textContent = `${category.name} | Mona`;
 
-  // جلب منتجات هذه الفئة
-  const { data: products, error: prodError } = await supabaseClient
-    .from('products')
-    .select('*')
+  // جلب منتجات هذه الفئة عبر جدول الربط (تصنيفات متعددة)
+  const { data: links, error: prodError } = await supabaseClient
+    .from('product_categories')
+    .select('products!inner(*)')
     .eq('category_id', categoryId)
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true });
+    .eq('products.is_active', true)
+    .order('sort_order', { referencedTable: 'products', ascending: true });
+
+  const products = (links || []).map(link => link.products);
 
   if (prodError || !products || products.length === 0) {
     grid.innerHTML = '<p class="empty-category">المجموعة قريباً... تواصلوا معنا عبر Instagram لمعرفة التفاصيل والطلب المسبق.</p>';

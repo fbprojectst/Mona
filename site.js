@@ -19,12 +19,17 @@ async function loadBanners() {
   }
 
   heroSlider.style.display = 'block';
-  track.innerHTML = banners.map((b, i) => `
-    <div class="slide ${i % 2 === 0 ? 'slide-a' : 'slide-b'}">
-      ${b.eyebrow_text ? `<p class="slide-eyebrow">${b.eyebrow_text}</p>` : ''}
-      <h2>${b.title}</h2>
-    </div>
-  `).join('');
+  track.innerHTML = banners.map((b, i) => {
+    if (b.banner_type === 'image' && b.image_url) {
+      return `<div class="slide slide-image" style="background-image:url('${b.image_url}')"></div>`;
+    }
+    return `
+      <div class="slide ${i % 2 === 0 ? 'slide-a' : 'slide-b'}">
+        ${b.eyebrow_text ? `<p class="slide-eyebrow">${b.eyebrow_text}</p>` : ''}
+        <h2>${b.title}</h2>
+      </div>
+    `;
+  }).join('');
 
   const count = banners.length;
   let index = 0;
@@ -51,12 +56,12 @@ async function loadBanners() {
 }
 
 async function loadFeaturedProducts() {
+  // نجيب كل المنتجات المميزة والنشطة، ثم نتحقق يدويًا إن لها فئة نشطة واحدة على الأقل
   const { data: products, error } = await supabaseClient
     .from('products')
-    .select('*, categories!inner(is_active)')
+    .select('*, product_categories(categories(is_active))')
     .eq('is_active', true)
     .eq('is_featured', true)
-    .eq('categories.is_active', true)
     .order('sort_order', { ascending: true });
 
   const grid = document.getElementById('featuredGrid');
@@ -66,12 +71,16 @@ async function loadFeaturedProducts() {
     return;
   }
 
-  if (!products || products.length === 0) {
+  const visibleProducts = (products || []).filter(p =>
+    (p.product_categories || []).some(pc => pc.categories && pc.categories.is_active)
+  );
+
+  if (visibleProducts.length === 0) {
     grid.innerHTML = '<p class="loading-msg">لا توجد منتجات مميزة حالياً.</p>';
     return;
   }
 
-  grid.innerHTML = products.map(buildProductCard).join('');
+  grid.innerHTML = visibleProducts.map(buildProductCard).join('');
 }
 
 async function loadHomeCategories() {

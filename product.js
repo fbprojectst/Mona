@@ -18,13 +18,15 @@ async function loadProductPage() {
 
   const { data: product, error } = await supabaseClient
     .from('products')
-    .select('*, categories!inner(is_active)')
+    .select('*, product_categories(categories(is_active))')
     .eq('id', productId)
     .eq('is_active', true)
-    .eq('categories.is_active', true)
     .single();
 
-  if (error || !product) {
+  const hasActiveCategory = product && (product.product_categories || [])
+    .some(pc => pc.categories && pc.categories.is_active);
+
+  if (error || !product || !hasActiveCategory) {
     container.innerHTML = '<p class="loading-msg">المنتج غير موجود.</p>';
     return;
   }

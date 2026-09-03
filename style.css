@@ -98,11 +98,15 @@ img { max-width: 100%; display: block; }
   background: var(--burgundy);
 }
 
-/* Hero slider */
+/* Hero slider - بطاقة مستطيلة بمقاس ثابت (نسبة 3:1، مقاس مرجعي 1200×400) */
 .hero-slider {
   position: relative;
   overflow: hidden;
-  height: 260px;
+  max-width: 1200px;
+  aspect-ratio: 3 / 1;
+  margin: 24px auto 0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
 }
 
 .slider-track {
@@ -121,6 +125,11 @@ img { max-width: 100%; display: block; }
   text-align: center;
   padding: 24px;
   color: var(--white);
+}
+
+.slide-image {
+  background-size: cover;
+  background-position: center;
 }
 
 .slide-a { background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-deep) 100%); }
@@ -226,12 +235,14 @@ img { max-width: 100%; display: block; }
 .product-grid {
   max-width: 1180px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
 }
 
 .product-card {
+  flex: 0 1 260px;
   background: var(--white);
   border-radius: var(--radius);
   overflow: hidden;
@@ -474,7 +485,6 @@ img { max-width: 100%; display: block; }
 
 /* Responsive */
 @media (max-width: 860px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-inner { grid-template-columns: 1fr; }
 }
 
@@ -495,5 +505,5 @@ img { max-width: 100%; display: block; }
   }
   .product-detail { grid-template-columns: 1fr; }
   .slide h2 { font-size: 1.4rem; }
-  .hero-slider { height: 220px; }
+  .hero-slider { margin-top: 16px; border-radius: 8px; }
 }

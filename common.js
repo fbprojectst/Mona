@@ -2,12 +2,95 @@
 // دوال مشتركة بين جميع صفحات الموقع العام
 // ============================================
 
+let storeSettingsCache = null;
+
 // تفعيل زر القائمة على الموبايل
 function initNavToggle() {
   const toggle = document.getElementById('navToggle');
   const nav = document.getElementById('mainNav');
   if (!toggle || !nav) return;
   toggle.addEventListener('click', () => nav.classList.toggle('open'));
+}
+
+// تحميل إعدادات المتجر (الاسم، اللوقو، الألوان، التواصل) وتطبيقها على الصفحة
+async function loadStoreSettings() {
+  const { data, error } = await supabaseClient
+    .from('store_settings')
+    .select('*')
+    .eq('id', 1)
+    .single();
+
+  if (error || !data) return null;
+
+  storeSettingsCache = data;
+
+  // تطبيق الألوان كمتغيرات CSS
+  if (data.primary_color) {
+    document.documentElement.style.setProperty('--burgundy', data.primary_color);
+    document.documentElement.style.setProperty('--burgundy-deep', shadeColor(data.primary_color, -30));
+  }
+  if (data.secondary_color) {
+    document.documentElement.style.setProperty('--gold', data.secondary_color);
+  }
+
+  // تطبيق اسم المتجر
+  const storeName = data.store_name || 'Mona';
+  document.querySelectorAll('.logo span').forEach(el => el.textContent = storeName);
+  document.querySelectorAll('.footer-brand h3').forEach(el => el.textContent = storeName);
+  document.title = document.title.replace(/^Mona/, storeName);
+
+  // تطبيق اللوقو
+  if (data.logo_url) {
+    document.querySelectorAll('.logo-img').forEach(el => el.src = data.logo_url);
+  }
+
+  // تحديث روابط واتساب/انستقرام/فيسبوك بالفوتر
+  updateSocialLinks(data);
+
+  return data;
+}
+
+// تفتيح/تغميق لون هيكس بنسبة معينة (لإنشاء تدرج غامق تلقائيًا من اللون الأساسي)
+function shadeColor(hex, percent) {
+  hex = hex.replace('#', '');
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+
+  r = Math.max(0, Math.min(255, Math.round(r + (r * percent / 100))));
+  g = Math.max(0, Math.min(255, Math.round(g + (g * percent / 100))));
+  b = Math.max(0, Math.min(255, Math.round(b + (b * percent / 100))));
+
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+function updateSocialLinks(settings) {
+  const phone = settings.whatsapp_number || '212600655645';
+  const waMessage = encodeURIComponent(`مرحباً ${settings.store_name || 'Mona'}، أعجبتني منتجاتكم وأود معرفة التفاصيل والأسعار 🌸`);
+
+  document.querySelectorAll('.social-icon[aria-label="WhatsApp"]').forEach(el => {
+    el.href = `https://api.whatsapp.com/send?phone=${phone}&text=${waMessage}`;
+  });
+
+  const instagramLinks = document.querySelectorAll('.social-icon[aria-label="Instagram"]');
+  if (settings.instagram_url) {
+    instagramLinks.forEach(el => {
+      el.href = settings.instagram_url;
+      el.style.display = '';
+    });
+  } else {
+    instagramLinks.forEach(el => el.style.display = 'none');
+  }
+
+  const facebookLinks = document.querySelectorAll('.social-icon[aria-label="Facebook"]');
+  if (settings.facebook_url) {
+    facebookLinks.forEach(el => {
+      el.href = settings.facebook_url;
+      el.style.display = '';
+    });
+  } else {
+    facebookLinks.forEach(el => el.style.display = 'none');
+  }
 }
 
 // تحميل الفئات النشطة في الـ nav والفوتر
@@ -20,7 +103,6 @@ async function loadCategoriesIntoNav() {
 
   if (error || !categories) return;
 
-  // إضافة روابط الفئات في القائمة العلوية (بعد "الرئيسية")
   const nav = document.getElementById('mainNav');
   if (nav) {
     const homeLink = nav.querySelector('a[href="index.html"]');
@@ -32,7 +114,6 @@ async function loadCategoriesIntoNav() {
     });
   }
 
-  // إضافة روابط الفئات في الفوتر
   const footerCategories = document.getElementById('footerCategories');
   if (footerCategories) {
     categories.forEach(cat => {
@@ -74,13 +155,14 @@ function buildProductCard(product) {
 
 // نص واتساب لطلب منتج معين
 function buildWhatsAppOrderLink(product) {
-  const phone = '212600655645';
+  const phone = (storeSettingsCache && storeSettingsCache.whatsapp_number) || '212600655645';
   const pageUrl = window.location.href;
   const text = encodeURIComponent(`مرحباً، أود طلب: ${product.name}\nرابط المنتج: ${pageUrl}`);
   return `https://api.whatsapp.com/send?phone=${phone}&text=${text}`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initNavToggle();
+  await loadStoreSettings();
   loadCategoriesIntoNav();
 });
